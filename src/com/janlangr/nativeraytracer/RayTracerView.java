@@ -39,7 +39,7 @@ public class RayTracerView extends View implements Runnable {
 	public RayTracerView(Context context, int width, int height) {
 		super(context);
 		
-		Log.d("OBJ", "MEM: "+Runtime.getRuntime().maxMemory());
+//		Log.d("OBJ", "MEM: "+Runtime.getRuntime().maxMemory());
 		
 		startTime = System.nanoTime();
 		
@@ -48,103 +48,118 @@ public class RayTracerView extends View implements Runnable {
 		
 		objParser = new ObjParser((Activity) context);
 		
-		Log.d("OBJ", "free heap memory: "+Runtime.getRuntime().freeMemory());
-		Log.d("OBJ", "total heap memory: "+Runtime.getRuntime().totalMemory());
+//		Log.d("OBJ", "free heap memory: "+Runtime.getRuntime().freeMemory());
+//		Log.d("OBJ", "total heap memory: "+Runtime.getRuntime().totalMemory());
 		
 		long init_time = System.nanoTime();
 		
-		try {
-			objParser.parseOBJFileStaticObject("teapot.obj");
-		} catch (IOException e) {
-			Log.d("OBJ", "Failed to open obj file.");
-		}
 		
-		Log.d("OBJ", "free heap memory: "+Runtime.getRuntime().freeMemory());
-		Log.d("OBJ", "total heap memory: "+Runtime.getRuntime().totalMemory());
 		
+//		Log.d("OBJ", "free heap memory: "+Runtime.getRuntime().freeMemory());
+//		Log.d("OBJ", "total heap memory: "+Runtime.getRuntime().totalMemory());
+		
+		// LIGHTS
 		RayTracerLibrary.addPointLight(3.0f, 3.0f, -6.0f, 1.0f, 1.0f, 1.0f);
 		
+		// MATERIALS
 		int cubeMat = RayTracerLibrary.addMaterial(0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 20.0f, 0.0f, 1.0f);
 		int floorMat = RayTracerLibrary.addMaterial(0.6f, 0.6f, 0.6f, 0.5f, 1.0f, 20.0f, 0.0f, 1.0f);
 		int trMat = RayTracerLibrary.addMaterial(0.6f, 0.6f, 1.0f, 0.1f, 0.1f, 20.0f, 0.7f, 1.0f);
 		
+//		// MESHES
+		int teapotMesh = RayTracerLibrary.createMeshTemplate(3100, 6500);
 		
+//		RayTracerLibrary.addTriangle(teapotMesh, -2.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 3.0f, 0.0f, cubeMat);
 		
-		RayTracerLibrary.addVertex(-1.0f, -1.0f, -1.0f);
-		RayTracerLibrary.addVertex(1.0f, -1.0f, -1.0f);
-		RayTracerLibrary.addVertex(1.0f, 1.0f, -1.0f);
-		RayTracerLibrary.addVertex(-1.0f, 1.0f, -1.0f);
-		RayTracerLibrary.addVertex(-1.0f, -1.0f, 1.0f);
-		RayTracerLibrary.addVertex(1.0f, -1.0f, 1.0f);
-		RayTracerLibrary.addVertex(1.0f, 1.0f, 1.0f);
-		RayTracerLibrary.addVertex(-1.0f, 1.0f, 1.0f);
+		try {
+			objParser.parseOBJFile("cube_test.obj", teapotMesh, cubeMat);
+		} catch (IOException e) {
+			Log.d("OBJ", "Failed to open obj file.");
+		}
 		
-		RayTracerLibrary.addTriangle(0, 1, 2, cubeMat);
-		RayTracerLibrary.addTriangle(0, 2, 3, cubeMat);
+		int teapotObject = RayTracerLibrary.createObject(teapotMesh);
+		int teapot1Object = RayTracerLibrary.createObject(teapotMesh);
+//		
 		
-		RayTracerLibrary.addTriangle(1, 5, 6, cubeMat);
-		RayTracerLibrary.addTriangle(1, 6, 2, cubeMat);
+//		
+//		// OBJECTS
+//		int teapot1 = RayTracerLibrary.createObject(teapotMesh);
 		
-		RayTracerLibrary.addTriangle(5, 4, 7, cubeMat);
-		RayTracerLibrary.addTriangle(5, 7, 6, cubeMat);
-		
-		RayTracerLibrary.addTriangle(4, 0, 3, cubeMat);
-		RayTracerLibrary.addTriangle(4, 3, 7, cubeMat);
-		
-		RayTracerLibrary.addTriangle(3, 2, 6, cubeMat);
-		RayTracerLibrary.addTriangle(3, 6, 7, cubeMat);
-		
-		RayTracerLibrary.addTriangle(4, 5, 1, cubeMat);
-		RayTracerLibrary.addTriangle(4, 1, 0, cubeMat);
-		
-		
-		RayTracerLibrary.addVertex(-3.0f, -2.0f, -3.0f);
-		RayTracerLibrary.addVertex(3.0f, -2.0f, -3.0f);
-		RayTracerLibrary.addVertex(3.0f, -2.0f, 3.0f);
-		RayTracerLibrary.addVertex(-3.0f, -2.0f, 3.0f);
-		
-		RayTracerLibrary.addTriangle(8, 9, 10, floorMat);
-		RayTracerLibrary.addTriangle(8, 10, 11, floorMat);
-		
-		
-		RayTracerLibrary.addVertex(-1.0f, -1.0f, -2.0f);
-		RayTracerLibrary.addVertex(1.0f, -1.0f, -2.0f);
-		RayTracerLibrary.addVertex(1.0f, 1.0f, -2.0f);
-		RayTracerLibrary.addVertex(-1.0f, 1.0f, -2.0f);
-		RayTracerLibrary.addVertex(-1.0f, -1.0f, -1.5f);
-		RayTracerLibrary.addVertex(1.0f, -1.0f, -1.5f);
-		RayTracerLibrary.addVertex(1.0f, 1.0f, -1.5f);
-		RayTracerLibrary.addVertex(-1.0f, 1.0f, -1.5f);
-		
-		RayTracerLibrary.addTriangle(0+12, 1+12, 2+12, trMat);
-		RayTracerLibrary.addTriangle(0+12, 2+12, 3+12, trMat);
-		
-		RayTracerLibrary.addTriangle(1+12, 5+12, 6+12, trMat);
-		RayTracerLibrary.addTriangle(1+12, 6+12, 2+12, trMat);
-		
-		RayTracerLibrary.addTriangle(5+12, 4+12, 7+12, trMat);
-		RayTracerLibrary.addTriangle(5+12, 7+12, 6+12, trMat);
-		
-		RayTracerLibrary.addTriangle(4+12, 0+12, 3+12, trMat);
-		RayTracerLibrary.addTriangle(4+12, 3+12, 7+12, trMat);
-		
-		RayTracerLibrary.addTriangle(3+12, 2+12, 6+12, trMat);
-		RayTracerLibrary.addTriangle(3+12, 6+12, 7+12, trMat);
-		
-		RayTracerLibrary.addTriangle(4+12, 5+12, 1+12, trMat);
-		RayTracerLibrary.addTriangle(4+12, 1+12, 0+12, trMat);
+//		RayTracerLibrary.addVertex(-1.0f, -1.0f, -1.0f);
+//		RayTracerLibrary.addVertex(1.0f, -1.0f, -1.0f);
+//		RayTracerLibrary.addVertex(1.0f, 1.0f, -1.0f);
+//		RayTracerLibrary.addVertex(-1.0f, 1.0f, -1.0f);
+//		RayTracerLibrary.addVertex(-1.0f, -1.0f, 1.0f);
+//		RayTracerLibrary.addVertex(1.0f, -1.0f, 1.0f);
+//		RayTracerLibrary.addVertex(1.0f, 1.0f, 1.0f);
+//		RayTracerLibrary.addVertex(-1.0f, 1.0f, 1.0f);
+//		
+//		RayTracerLibrary.addTriangle(0, 1, 2, cubeMat);
+//		RayTracerLibrary.addTriangle(0, 2, 3, cubeMat);
+//		
+//		RayTracerLibrary.addTriangle(1, 5, 6, cubeMat);
+//		RayTracerLibrary.addTriangle(1, 6, 2, cubeMat);
+//		
+//		RayTracerLibrary.addTriangle(5, 4, 7, cubeMat);
+//		RayTracerLibrary.addTriangle(5, 7, 6, cubeMat);
+//		
+//		RayTracerLibrary.addTriangle(4, 0, 3, cubeMat);
+//		RayTracerLibrary.addTriangle(4, 3, 7, cubeMat);
+//		
+//		RayTracerLibrary.addTriangle(3, 2, 6, cubeMat);
+//		RayTracerLibrary.addTriangle(3, 6, 7, cubeMat);
+//		
+//		RayTracerLibrary.addTriangle(4, 5, 1, cubeMat);
+//		RayTracerLibrary.addTriangle(4, 1, 0, cubeMat);
+//		
+//		
+//		RayTracerLibrary.addVertex(-3.0f, -2.0f, -3.0f);
+//		RayTracerLibrary.addVertex(3.0f, -2.0f, -3.0f);
+//		RayTracerLibrary.addVertex(3.0f, -2.0f, 3.0f);
+//		RayTracerLibrary.addVertex(-3.0f, -2.0f, 3.0f);
+//		
+//		RayTracerLibrary.addTriangle(8, 9, 10, floorMat);
+//		RayTracerLibrary.addTriangle(8, 10, 11, floorMat);
+//		
+//		
+//		RayTracerLibrary.addVertex(-1.0f, -1.0f, -2.0f);
+//		RayTracerLibrary.addVertex(1.0f, -1.0f, -2.0f);
+//		RayTracerLibrary.addVertex(1.0f, 1.0f, -2.0f);
+//		RayTracerLibrary.addVertex(-1.0f, 1.0f, -2.0f);
+//		RayTracerLibrary.addVertex(-1.0f, -1.0f, -1.5f);
+//		RayTracerLibrary.addVertex(1.0f, -1.0f, -1.5f);
+//		RayTracerLibrary.addVertex(1.0f, 1.0f, -1.5f);
+//		RayTracerLibrary.addVertex(-1.0f, 1.0f, -1.5f);
+//		
+//		RayTracerLibrary.addTriangle(0+12, 1+12, 2+12, trMat);
+//		RayTracerLibrary.addTriangle(0+12, 2+12, 3+12, trMat);
+//		
+//		RayTracerLibrary.addTriangle(1+12, 5+12, 6+12, trMat);
+//		RayTracerLibrary.addTriangle(1+12, 6+12, 2+12, trMat);
+//		
+//		RayTracerLibrary.addTriangle(5+12, 4+12, 7+12, trMat);
+//		RayTracerLibrary.addTriangle(5+12, 7+12, 6+12, trMat);
+//		
+//		RayTracerLibrary.addTriangle(4+12, 0+12, 3+12, trMat);
+//		RayTracerLibrary.addTriangle(4+12, 3+12, 7+12, trMat);
+//		
+//		RayTracerLibrary.addTriangle(3+12, 2+12, 6+12, trMat);
+//		RayTracerLibrary.addTriangle(3+12, 6+12, 7+12, trMat);
+//		
+//		RayTracerLibrary.addTriangle(4+12, 5+12, 1+12, trMat);
+//		RayTracerLibrary.addTriangle(4+12, 1+12, 0+12, trMat);
 		
 		// Dynamic data.
-		int simplex = RayTracerLibrary.createDynamicObject(4, 4);
-		int v1 = RayTracerLibrary.addDynamicVertex(simplex, -1.0f, 0.0f, -1.0f);
-		int v2 = RayTracerLibrary.addDynamicVertex(simplex, 1.0f, 0.0f, -1.0f);
-		int v3 = RayTracerLibrary.addDynamicVertex(simplex, 0.0f, 0.0f, 2.0f);
-		int v4 = RayTracerLibrary.addDynamicVertex(simplex, 0.0f, 2.0f, 0.0f);
-		
-		RayTracerLibrary.addDynamicTriangle(simplex, v2, v1, v3, cubeMat);
-		RayTracerLibrary.addDynamicTriangle(simplex, v1, v2, v4, cubeMat);
-		RayTracerLibrary.addDynamicTriangle(simplex, v2, v3, v4, cubeMat);
-		RayTracerLibrary.addDynamicTriangle(simplex, v3, v1, v4, cubeMat);
+//		int simplex = RayTracerLibrary.createDynamicObject(4, 4);
+//		int v1 = RayTracerLibrary.addDynamicVertex(simplex, -1.0f, 0.0f, -1.0f);
+//		int v2 = RayTracerLibrary.addDynamicVertex(simplex, 1.0f, 0.0f, -1.0f);
+//		int v3 = RayTracerLibrary.addDynamicVertex(simplex, 0.0f, 0.0f, 2.0f);
+//		int v4 = RayTracerLibrary.addDynamicVertex(simplex, 0.0f, 2.0f, 0.0f);
+//		
+//		RayTracerLibrary.addDynamicTriangle(simplex, v2, v1, v3, cubeMat);
+//		RayTracerLibrary.addDynamicTriangle(simplex, v1, v2, v4, cubeMat);
+//		RayTracerLibrary.addDynamicTriangle(simplex, v2, v3, v4, cubeMat);
+//		RayTracerLibrary.addDynamicTriangle(simplex, v3, v1, v4, cubeMat);
 		
 		
 		
@@ -154,8 +169,8 @@ public class RayTracerView extends View implements Runnable {
 		RayTracerLibrary.init(context);
 		Log.d("LIBRAY", "RayTracerLib init (incl. BVH): "+(((double)(System.nanoTime() - init_time))*(10e-10)) + " s");
 		
-		Log.d("OBJ", "free heap memory: "+Runtime.getRuntime().freeMemory());
-    	Log.d("OBJ", "total heap memory: "+Runtime.getRuntime().totalMemory());
+//		Log.d("OBJ", "free heap memory: "+Runtime.getRuntime().freeMemory());
+//    	Log.d("OBJ", "total heap memory: "+Runtime.getRuntime().totalMemory());
 	}
 	
 	@Override
@@ -170,16 +185,23 @@ public class RayTracerView extends View implements Runnable {
 //        }
         
 //        Log.d("TIME", ""+(double)delta*(10e-10));
-    	fpsc.getFPS(System.nanoTime());
-        
-    	if(true) {
-    		int result = RayTracerLibrary.rayTraceScene((float)(delta*(10e-10)));
+//    	fpsc.getFPS(System.nanoTime());
+    	
+    	if(render) {
+    		long frameTime = System.nanoTime();
+            
+        	int result = RayTracerLibrary.rayTraceScene((float)(delta*(10e-10)));
+        	
+        	frameTime = System.nanoTime() - frameTime;
+        	
+        	float ms = (float)(delta*(10e-7));
+//        	Log.d("FPS", "Frame time: "+ms+" ms ~ "+(1000.0f / ms)+" fps");
     		
     		if(result == 0) {
 //    			Log.d("LIBRAY", "Posting invalidate");
     	        this.postInvalidate();
     		}
-    		render = false;
+//    		render = false;
     	}
     	
 		canvas.drawBitmap(RayTracerLibrary.bitmap, null, viewPort, null);
@@ -231,12 +253,6 @@ public class RayTracerView extends View implements Runnable {
 	    		render = false;
 	    	}
 		}
-		
-	}
-
-	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		// TODO Auto-generated method stub
 		
 	}
 }
